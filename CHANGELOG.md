@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.1.0-dev.1
+## 0.1.0 — developer preview
+
+- Prepare the initial GitHub release with source provenance, documented protocol
+  limits, an offline example and a community introduction.
+- This release covers frame codecs; connected sessions and live transport
+  adapters remain future work.
+
+## 0.1.0-dev.1 — private extraction
 
 - Extract KISS and AX.25 address/frame codecs into a Dart-only package.
 - Replace unbounded KISS accumulation with bounded incremental decoding.

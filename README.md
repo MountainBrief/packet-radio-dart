@@ -4,7 +4,7 @@ Portable Dart codecs for KISS-framed TNC links and a strict AX.25 modulo-8 frame
 subset. Build packet-radio utilities, offline diagnostics and transport adapters
 without importing a mobile app or cloud service.
 
-**Development preview: 0.1.0-dev.1.** Prepared for community stewardship through
+**Developer preview: 0.1.0.** Prepared for community stewardship through
 Mountain Brief Foundation. This is a codec library, not a modem or a connected-mode
 AX.25 session implementation. There are no runtime dependencies outside the Dart
 SDK, no Flutter requirement and no networking or hardware access.
@@ -14,6 +14,8 @@ SDK, no Flutter requirement and no networking or hardware access.
 Install Dart 3.4 or newer, then run these commands from the package directory:
 
 ```sh
+git clone https://github.com/MountainBrief/packet-radio-dart.git mb-packet-radio-dart
+cd mb-packet-radio-dart
 dart pub get
 dart run example/mb_packet_radio_example.dart
 dart test
@@ -30,8 +32,8 @@ dependencies:
     path: ../mb-packet-radio-dart
 ```
 
-The package is not on pub.dev. Its pubspec deliberately contains
-`publish_to: none` during release preparation.
+The package is distributed through GitHub, rather than pub.dev, for the initial
+developer preview. Its pubspec contains `publish_to: none`.
 
 ## Encode, fragment and decode a packet
 
@@ -127,10 +129,10 @@ packaging and validation changes. This extraction includes no ESP32 APRS
 firmware, GPL firmware library, operational configuration, resident records,
 authentication secrets or original repository history.
 
-The candidate license is Apache-2.0; its text is in `LICENSE`. The release
-checklist records the publication/rights confirmation still needed before a
-public release. Copyright attribution follows the original source history;
-Foundation stewardship does not imply an assignment of copyright.
+Apache-2.0; see [LICENSE](LICENSE) and [NOTICE](NOTICE). Copyright attribution
+follows the original source history; Foundation stewardship does not imply an
+assignment of copyright. Publication status and the prepared release decision
+are recorded in [docs/RELEASE_READINESS.md](docs/RELEASE_READINESS.md).
 
 Protocol references: [KISS by K3MC and KA9Q](https://www.ax25.net/kiss.aspx) and
 [TAPR/ARRL AX.25 specification](https://files.tapr.org/tech_docs/AX25/AX25.2.2.pdf).

@@ -1,40 +1,44 @@
 # Initial release readiness
 
-Version: 0.1.0-dev.1. This is a private preparation checkpoint, not a public
-release, Foundation copyright assignment or live-radio qualification.
+Version 0.1.0 is prepared as a developer preview in a private repository.
+The proposed public release is described in [releases/0.1.0.md](releases/0.1.0.md).
 
-## Implemented
+## Technical review
 
-- Standalone Dart SDK core with no runtime package dependencies.
-- KISS framing, bounded stream reassembly and ATT-sized chunk helper.
-- Strict AX.25 modulo-8 address/frame codec subset.
-- Offline runnable example and independent malformed/fragmented wire tests.
-- Source provenance, notices, candidate Apache-2.0 license and contribution docs.
-- Read-only-permission CI workflow with Actions pinned to retrieved commit SHAs.
-- Automatic pub.dev publication disabled with `publish_to: none`.
+- The four extracted codecs are attributed to Stijn Vanveerdeghem; the source
+  paths, original blobs and extraction changes are recorded in PROVENANCE.md.
+- The initial candidate `61a93a0cdcffa189aab26dead13d477925e78cd1` passed all
+  45 tests, formatting, analysis and the offline example on Dart 3.4.4 and stable
+  in [GitHub Actions](https://github.com/MountainBrief/packet-radio-dart/actions/runs/45895043754).
+- Release preparation changes package metadata and documentation only. The
+  codec and test source remains identical to that validated baseline.
+- The release pull request runs those checks again for the exact prepared source.
+- A separate consumer-project check verifies installation by a path dependency,
+  execution of the offline example, and compilation to JavaScript. Its result
+  is recorded in the release pull request.
+- This package includes no original repository history, operational secrets,
+  runtime data, ESP32/APRS firmware or GPL firmware libraries.
 
-## Before public release
+## Publication decision
 
-- Confirm the source owner's authority to publish the selected files and grant
-  Apache-2.0 rights, including any applicable employment/contractor/patent rights.
-  Git author metadata records attribution, not a legal ownership determination.
-- Confirm the Foundation's preferred stewardship/repository identity. Do not
-  imply a copyright transfer without a separate written decision.
-- Review the package API, documented limits, notices and exact candidate commit.
-- Record clean analysis, tests and example execution for the reviewed source.
-- Confirm CI on the declared minimum SDK and stable Dart; a configured job is
-  not evidence that it ran successfully.
-- Make the reviewed standalone repository public only when publication is
-  authorized. Separately decide whether to publish on pub.dev and select the
-  final version; do not remove `publish_to: none` as part of routine testing.
+The remaining decision is to make the standalone repository public and publish
+the v0.1.0 GitHub release under Apache-2.0. No public release or outreach has
+been performed as part of preparation. Pub.dev publication remains disabled
+with `publish_to: none` and is outside this first GitHub release.
+
+The source-owner publication decision must cover the selected files and
+license grant. Git authorship records attribution, rather than a separate legal
+ownership determination. Copyright attribution remains unchanged; Foundation
+stewardship does not create an assignment of copyright.
 
 ## Follow-on work
 
-- A receive-only adapter example for a real TNC byte stream.
-- External TNC compatibility reports and privately sanitized capture fixtures.
+- Invite outside developers to run the example and contribute minimal fixtures
+  or TNC compatibility reports.
+- Add a receive-only adapter example in response to actual community use cases.
 - Split the connected-session abstract frame link from Flutter before offering
-  connected mode. Review timing and recovery limitations separately.
-- Consider optional digipeater-path support based on outside use cases.
-- Adopt selected hardened changes back into MB through its normal source review,
-  development acceptance and production process. This extraction changes no MB
-  application, firmware or deployed runtime.
+  connected mode, with a separate review of timing and recovery limitations.
+- Consider digipeater paths based on outside demand.
+- Adopt selected hardening changes back into MB through its normal source
+  review and development acceptance. This extraction changes no deployed MB
+  application or firmware.
