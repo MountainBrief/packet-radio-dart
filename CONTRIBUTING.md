@@ -1,21 +1,32 @@
 # Contributing
 
-Keep changes small enough to review alongside a concrete protocol behavior.
-Include a failing byte fixture or a reproducible test for a bug report, and state
-the source of any external fixture. Do not include private traffic, credentials,
-callsigns tied to private locations, resident data or unredacted radio-email logs.
+Bug reports, small fixes and compatibility reports are welcome. Include a
+minimal synthetic byte sequence, expected behavior and actual behavior. State
+the origin and redistribution terms of any external fixture.
 
-Run the development commands in README.md. Prefer deterministic offline tests
-for codecs. Transport integrations should live behind separate adapters so the
-core remains independent of Flutter, Bluetooth plugins and operating systems.
+For a hardware report, identify the TNC model, firmware/software versions,
+transport, input bytes and observed result. Keep captures free of credentials,
+private messages and location-linked personal information. Use SECURITY.md for
+potential vulnerabilities.
 
-Do not describe encoding success, a transport write or a unit test as proof of
-radio transmission, remote acceptance or delivery. Any hardware test report
-should identify the TNC, software version, setup, input bytes and observed result.
+## Checks
 
-Changes here do not automatically change Mountain Brief's application. Coordinate
-any future adoption through its normal integration and release process.
+```sh
+dart pub get
+dart format --output=none --set-exit-if-changed .
+dart analyze --fatal-infos
+dart test
+dart run example/mb_packet_radio_example.dart
+```
 
-The initial public API supports a documented subset. Discuss new protocol
-features before broadening it. Contributions must be work you are authorized to
-share under the project's chosen release license, retaining required notices.
+Keep core changes independent of Flutter and operating-system or Bluetooth
+plugins. Add deterministic wire fixtures for protocol changes. Discuss new
+protocol features before expanding the documented subset.
+
+Describe evidence precisely: encoding, transport writes, radio transmission and
+remote acceptance are different observations. Offline tests establish software
+behavior; hardware compatibility needs a reproducible hardware result.
+
+Contribute only material you are authorized to share under Apache-2.0, retaining
+required copyright and third-party notices. Follow the repository license for
+contributions; no copyright assignment is required by this contribution guide.
