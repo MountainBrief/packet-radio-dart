@@ -1,4 +1,5 @@
 // Copyright 2026 Stijn Vanveerdeghem
+// Copyright assigned to Mountain Brief LLC effective 2026-11-26.
 // SPDX-License-Identifier: Apache-2.0
 
 import 'dart:typed_data';

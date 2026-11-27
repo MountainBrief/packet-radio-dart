@@ -1,39 +1,39 @@
 # MB Packet Radio
 
-Portable Dart codecs for KISS-framed TNC links and a strict AX.25 modulo-8 frame
-subset. Build packet-radio utilities, offline diagnostics and transport adapters
-without importing a mobile app or cloud service.
+KISS framing and AX.25 frame codecs for Dart applications, command-line tools
+and Flutter projects. Use the same byte APIs for offline diagnostics and your
+own transport adapters.
 
-**Development preview: 0.1.0-dev.1.** Prepared for community stewardship through
-Mountain Brief Foundation. This is a codec library, not a modem or a connected-mode
-AX.25 session implementation. There are no runtime dependencies outside the Dart
-SDK, no Flutter requirement and no networking or hardware access.
+**0.1.0 · Developer preview · Dart 3.4+ · Apache-2.0**
 
-## Try it offline
+A community software project stewarded by Mountain Brief Foundation.
+Copyright owner: Mountain Brief LLC. Original author: Stijn Vanveerdeghem.
 
-Install Dart 3.4 or newer, then run these commands from the package directory:
+The library uses only the Dart SDK. It provides frame encoding and decoding;
+applications supply the transport and any connected-session behavior.
+
+## Quickstart
 
 ```sh
+git clone https://github.com/MountainBrief/packet-radio-dart.git
+cd packet-radio-dart
 dart pub get
 dart run example/mb_packet_radio_example.dart
 dart test
 ```
 
-`pub get` downloads development tools on the first run. The example and codec
-tests run locally and neither open a transport nor transmit a packet.
+The example encodes a synthetic packet, fragments the KISS bytes and decodes
+them again, entirely offline. The first `pub get` downloads development tools.
 
 To use a local checkout from another Dart or Flutter project:
 
 ```yaml
 dependencies:
   mb_packet_radio:
-    path: ../mb-packet-radio-dart
+    path: ../packet-radio-dart
 ```
 
-The package is not on pub.dev. Its pubspec deliberately contains
-`publish_to: none` during release preparation.
-
-## Encode, fragment and decode a packet
+## Encode and decode
 
 ```dart
 import 'dart:convert';
@@ -47,10 +47,10 @@ void main() {
     control: Ax25UControl.ui,
     info: utf8.encode('Hello packet radio'),
   );
-
   final wire = KissCodec.encode(
-    KissFrame(port: 0, payload: Ax25Codec.encode(packet)),
+    KissFrame(payload: Ax25Codec.encode(packet)),
   );
+
   final receiver = KissReassembler();
   for (final chunk in KissCodec.chunk(wire, mtu: 23)) {
     for (final frame in receiver.addChunk(chunk)) {
@@ -62,77 +62,66 @@ void main() {
 }
 ```
 
-Use each `KissReassembler` for one transport byte stream. Call `reset()` when
-that transport disconnects. A KISS command frame is represented separately from
-a data frame; applications should check `isData` before passing payloads to AX.25.
+Use one `KissReassembler` per transport byte stream and call `reset()` on
+disconnect. Check `isData` before treating a KISS payload as AX.25.
+`KissCodec.chunk` calculates ATT-sized fragments without accessing Bluetooth.
 
 ## Supported profile
 
-| Component | Included | Outside this release |
-| --- | --- | --- |
-| KISS | All 16 port/command nibble values, escaping of type and payload bytes, fragmented/coalesced streams, idle delimiters | TNC command execution, hardware setup, checksummed KISS extensions |
-| Addressing | ASCII alphanumeric callsigns of 1–6 characters; SSIDs 0–15; source/destination C and extension bits | Digipeater paths; legacy equal-C-bit AX.25 1.x frames |
-| AX.25 frames | Modulo-8 I, RR/RNR/REJ, SABM/UA/DISC/DM/FRMR/UI; P/F bits; UI and I PID bytes | Modulo-128, SABME, SREJ, XID/TEST and unknown U controls |
-| Framing boundary | AX.25 bytes from destination through information, before FCS | HDLC flags, FCS generation/verification, bit stuffing, audio or RF modulation |
-| Transport | Pure byte APIs; optional ATT-sized chunk arithmetic | Bluetooth scanning, permissions, serial/TCP connections, retransmission or connection timers |
+| Component | Support |
+| --- | --- |
+| KISS | All 16 port and command field values; escaped type/payload bytes; fragmented and coalesced frames; idle delimiters |
+| Addressing | Source and destination callsigns of 1–6 ASCII alphanumeric characters; SSIDs 0–15; C and extension bits |
+| AX.25 | Modulo-8 I, RR/RNR/REJ and SABM/UA/DISC/DM/FRMR/UI frames; P/F bits; I/UI PID bytes |
+| Byte boundary | AX.25 destination address through information, before HDLC FCS |
 
-The codec does not establish delivery, issuing authority or permission to
-transmit. It is not a complete AX.25 2.2 implementation or an APRS application.
-Successful decoding means only that a frame matches this documented subset.
+This preview excludes digipeater paths, legacy equal-C-bit addresses,
+modulo-128, SABME, SREJ, XID/TEST and unknown U controls. It includes no
+connection timers, retransmission engine, Bluetooth/serial/TCP adapter, FCS,
+bit stuffing, audio modem or RF transmission. It is a documented codec subset,
+not a complete AX.25 implementation or an APRS application.
 
-### Bounds and error behavior
+### Limits and recovery
 
-- KISS defaults to at most **4096 decoded body bytes**, including the type byte,
-  and **32 retained error messages** per reassembler. Both are configurable.
-- Bytes before the first delimiter are ignored. Invalid escapes, truncated
-  escapes at a delimiter and oversized frames cause the whole frame to be
-  discarded until the next delimiter. This strict policy differs from parsers
-  that keep assembling after an invalid escape.
-- Memory retained for an incomplete frame and diagnostics is bounded. A call
-  that contains many complete frames returns all of them; callers own that
-  output and should bound transport chunk sizes as appropriate.
-- AX.25 I/UI information defaults to at most **256 bytes**. The
-  `maxInformationBytes` argument on encode/decode can explicitly select a
-  different limit; match it to the actual modem and application.
-- FRMR carries exactly three information bytes in this modulo-8 profile. Other
-  supported non-UI U frames and all S frames reject trailing information.
-- Invalid sequence numbers, SSIDs, PIDs, integer bytes and frame/control
-  combinations are rejected rather than silently truncated. Frame payloads
-  are defensive copies exposed as read-only byte views.
-- `Ax25Codec.tryDecode` returns `null` for malformed or unsupported wire data.
-  Invalid configuration, such as a negative information limit, still throws.
+- KISS defaults to **4096 decoded body bytes**, including the type byte, and
+  **32 retained error messages**. Both limits are configurable.
+- Bytes before the first FEND are ignored. Malformed and oversized frames are
+  discarded until the next FEND; incomplete frames remain pending. This strict
+  policy drops a corrupt frame rather than retaining bytes after a bad escape.
+- Pending frame storage and diagnostic history are bounded. Completed frames
+  returned by `addChunk` belong to the caller; bound transport chunk sizes to
+  control the size of each returned list.
+- I/UI information defaults to **256 bytes**. Set `maxInformationBytes` on
+  encode/decode to choose an explicit alternative. Match it to your transport.
+- Modulo-8 FRMR information is exactly three bytes. Other supported non-UI U
+  frames and all S frames reject trailing information.
+- Invalid byte values, sequence numbers, PIDs and frame/control combinations
+  are rejected. Payloads are copied into read-only views.
+- `Ax25Codec.tryDecode` returns `null` for unsupported or malformed frames.
+  Invalid configuration, such as a negative limit, still throws.
 
-## Development
+## Development and feedback
 
 ```sh
-dart pub get
 dart format --output=none --set-exit-if-changed .
 dart analyze --fatal-infos
 dart test
-dart run example/mb_packet_radio_example.dart
 ```
 
-Tests include hand-authored wire fixtures, binary payloads, every KISS
-port/command combination, every split of an escaped fixture, randomized transport
-fragmentation, corrupt-frame recovery, resource limits and malformed AX.25 input.
-These are offline software tests; live TNC/radio interoperability is future work.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md), [PROVENANCE.md](PROVENANCE.md) and
-[docs/RELEASE_READINESS.md](docs/RELEASE_READINESS.md).
+See [validation](docs/VALIDATION.md) for tested environments and evidence.
+Minimal synthetic wire fixtures, parser edge cases and TNC compatibility
+reports are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) and
+[SECURITY.md](SECURITY.md).
 
 ## Origins and license
 
-Extracted from Mountain Brief's Dart mobile-app codecs, with standalone
-packaging and validation changes. This extraction includes no ESP32 APRS
-firmware, GPL firmware library, operational configuration, resident records,
-authentication secrets or original repository history.
+Developed within Mountain Brief and extracted into a standalone package for
+radio and emergency-communications developers. Development included AI-assisted
+coding; the source history and extraction changes are recorded in
+[PROVENANCE.md](PROVENANCE.md).
 
-The candidate license is Apache-2.0; its text is in `LICENSE`. The release
-checklist records the publication/rights confirmation still needed before a
-public release. Copyright attribution follows the original source history;
-Foundation stewardship does not imply an assignment of copyright.
+Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE) for terms and attribution.
+The initial distribution is through GitHub; the package is not on pub.dev.
 
 Protocol references: [KISS by K3MC and KA9Q](https://www.ax25.net/kiss.aspx) and
-[TAPR/ARRL AX.25 specification](https://files.tapr.org/tech_docs/AX25/AX25.2.2.pdf).
-Those documents explain the wire protocols; their text and implementations are
-not bundled or relicensed by this package.
+[TAPR/ARRL AX.25](https://files.tapr.org/tech_docs/AX25/AX25.2.2.pdf).
