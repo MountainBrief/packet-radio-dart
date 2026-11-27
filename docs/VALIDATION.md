@@ -9,7 +9,7 @@ the Dart SDK.
 
 The initial 0.1.0 candidate `c0ec5d1fccbd18ae8f9ceaf08eacb73f21f06e0d`
 passed the matrix with **45 tests** in
-[GitHub Actions](https://github.com/MountainBrief/packet-radio-dart/actions/runs/45895985275).
+[GitHub Actions](https://github.com/MountainBriefFoundation/packet-radio-dart/actions/runs/45895985275).
 The latest workflow results are available in the repository's Actions tab.
 
 ## Test coverage

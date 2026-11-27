@@ -15,7 +15,7 @@ applications supply the transport and any connected-session behavior.
 ## Quickstart
 
 ```sh
-git clone https://github.com/MountainBrief/packet-radio-dart.git
+git clone https://github.com/MountainBriefFoundation/packet-radio-dart.git
 cd packet-radio-dart
 dart pub get
 dart run example/mb_packet_radio_example.dart
