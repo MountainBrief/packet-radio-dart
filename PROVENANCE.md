@@ -20,6 +20,17 @@ Original AX.25 introduction: `3dad0473ef3003049f44d172fdabad0883e62175`.
 Subsequent AX.25 fixes include `8ab232e1b2262f45424d922a4a502df9fc8e8b74`
 and `4f7948f63377ffaf70e1c40af70ee942af3d58d5`.
 
+## Ownership and attribution
+
+The copyrights held by Stijn Vanveerdeghem in the selected original codecs and
+standalone package snapshot `7dc945395e19ae95c4690352c59e57888976ad28` were
+assigned to Mountain Brief LLC effective November 26, 2026. Original copyright
+notices, author credits and AI-tool provenance are retained.
+
+Mountain Brief Foundation stewards the community project. The assignment did
+not transfer copyright to the Foundation and does not claim ownership of the
+underlying protocols or third-party material.
+
 ## Extraction changes
 
 - Added standalone Dart packaging and a single public library.

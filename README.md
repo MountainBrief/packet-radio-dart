@@ -6,7 +6,8 @@ own transport adapters.
 
 **0.1.0 · Developer preview · Dart 3.4+ · Apache-2.0**
 
-Stewarded by Mountain Brief Foundation as a community software project.
+A community software project stewarded by Mountain Brief Foundation.
+Copyright owner: Mountain Brief LLC. Original author: Stijn Vanveerdeghem.
 
 The library uses only the Dart SDK. It provides frame encoding and decoding;
 applications supply the transport and any connected-session behavior.

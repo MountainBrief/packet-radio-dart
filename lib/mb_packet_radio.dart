@@ -1,4 +1,5 @@
 // Copyright 2026 Stijn Vanveerdeghem
+// Copyright assigned to Mountain Brief LLC effective 2026-11-26.
 // SPDX-License-Identifier: Apache-2.0
 
 /// Portable KISS framing and a strict AX.25 modulo-8 frame-codec subset.
