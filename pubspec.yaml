@@ -1,7 +1,7 @@
 name: mb_packet_radio
 description: Portable KISS framing and strict AX.25 modulo-8 frame codecs, extracted from Mountain Brief.
 version: 0.1.0
-repository: https://github.com/MountainBrief/packet-radio-dart
+repository: https://github.com/MountainBriefFoundation/packet-radio-dart
 publish_to: none
 environment:
   sdk: '>=3.4.0 <4.0.0'
